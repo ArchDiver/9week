@@ -14,9 +14,11 @@ app.use(bodyparser.raw({ extended: false})) // adding support for raw text vals
 
 //Import for all API routes: TODO
 const patientsRoute = require('./routes/patients')
+const userRoute = require('./routes/users')
 
 //Using route imports as Middleware: TODO
 app.use('/', patientsRoute);
+app.use('/users', userRoute);
 
 const port = process.env.PORT || 3001;
 
