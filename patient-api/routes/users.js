@@ -15,7 +15,7 @@ const knex = require('../knex-config');
  */
 
 function createUser(first_name, last_name,email,password){
-    return knex('user')
+    return knex('users')
     .insert({
         first_name:first_name,
         last_name: last_name,
@@ -52,8 +52,8 @@ router.post('/register', (req,res) => {
 async function comparePass(password,passwordHash){
     const passMatch = await bcryptjs.compare(password,passwordHash);
 
-    if(passwordHash){
-        return passHash
+    if(passMatch){
+        return passwordHash
     } else {
         return 'Auth Failed'
     }
@@ -62,16 +62,16 @@ async function comparePass(password,passwordHash){
 // Login Route
 
 router.post('/login', (req,res) => {
-    knex('user')
+    knex('users')
     .where({email: req.body.email})
-    .select('password', 'email', 'fist_name')
+    .select('password', 'email', 'first_name')
     .then(result => {
         if(!result || !result[0]){
             return 'Auth Failed at Login'
         }
         let verifiedPass = comparePass(req.body.password, result[0].password);
         if(verifiedPass){
-            let token - jwt.sign({
+            let token = jwt.sign({
                 email: result[0].email,
                 first_name: result[0].first_name,
                 time: new Date().toLocaleTimeString()
@@ -81,7 +81,8 @@ router.post('/login', (req,res) => {
             res.json({status: 'Success - Password Verified'})
         }else {
             res.json({statues: "Auth Failed - Password not Verified"})
-        }
-        }
+        }        
     })
 })
+
+module.exports = router
