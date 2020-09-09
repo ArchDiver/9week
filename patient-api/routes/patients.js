@@ -5,6 +5,10 @@ const router = require('express').Router();
 // Import for knex config object
 const knex = require('../knex-config');
 
+// Import for AuthGuard
+
+const authGuard = require('../authGuard/authGuard');
+
 // Helper Function for creating a patient
  function createPatient(patient_name,condition,location){
     return knex('patients')
@@ -21,7 +25,7 @@ const knex = require('../knex-config');
 
 
 // Create New Patient
- router.post('/patients/create', async (req,res) => {
+ router.post('/patients/create', authGuard, async (req,res) => {
     let patient_name = req.body.patient_name
     let condition = req.body.condition
     let location = req.body.location
@@ -79,7 +83,7 @@ router.get('/patients', async(req,res) =>{
       .where('id', id)          
   }
   //UPDATE ROUTE for patients
-  router.post('/patients/update/:id', async(req,res) =>{
+  router.post('/patients/update/:id',authGuard, async(req,res) =>{
       let id = parseInt(req.params.id)
       let patient_name = req.body.patient_name
       let condition = req.body.condition
@@ -99,7 +103,7 @@ router.get('/patients', async(req,res) =>{
       .where({id:id})
       .del()
   }
-  router.delete('patients/delete/:id', async(req,res)=>{
+  router.delete('patients/delete/:id',authGuard, async(req,res)=>{
       let id = parseInt(req.params.id);
       await deletePatient(id);
       res.json({status: 'Sucess - Deleted'})

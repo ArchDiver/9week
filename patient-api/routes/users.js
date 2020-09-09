@@ -78,7 +78,7 @@ router.post('/login', (req,res) => {
             }, process.env.JWT_SECRET, {
                 expiresIn: '1hr'
             })
-            res.json({status: 'Success - Password Verified'})
+            res.json({status: 'Success - Password Verified', token: token})
         }else {
             res.json({statues: "Auth Failed - Password not Verified"})
         }        
